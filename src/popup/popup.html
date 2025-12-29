@@ -9,6 +9,22 @@
 <body>
 <div id="popup-content" class="popup">
     <button id="open-upload-tab-btn" class="btn btn--primary" type="button">Manage Images</button>
+
+    <div class="control-group">
+        <label for="randomness-input" class="control-label">
+            Replace 1 in <span id="randomness-value">333</span> images
+        </label>
+        <input
+            type="range"
+            id="randomness-input"
+            class="slider"
+            min="250"
+            max="1000"
+            value="333"
+            aria-label="Image replacement frequency - 1 in X images"
+        />
+    </div>
+
     <button id="sharkify-btn" class="btn" type="button">Sharkify</button>
     <button id="reset-btn" class="btn btn--ghost" type="button">Reset</button>
 </div>

@@ -55,16 +55,20 @@
 
 	let sessionSharkURL = null;
 
-	async function sharkify({ url, randomizePerImage }) {
+	async function sharkify({ url, randomizePerImage, randomnessOneInX }) {
 		const finalUrl = sessionSharkURL || url;
 		if (!finalUrl) return;
 		if (!sessionSharkURL) sessionSharkURL = finalUrl;
 
 		await preload(finalUrl);
 
+		// Calculate probability as 1/X (e.g., 1/333 = 0.003)
+		const oneInX = randomnessOneInX ?? 333;
+		const probability = 1 / oneInX;
+
 		for (const img of document.querySelectorAll("img")) {
 			if (img.classList.contains("sharkify-image")) continue;
-			if (randomizePerImage && Math.random() >= 1 / 3) continue;
+			if (randomizePerImage && Math.random() >= probability) continue;
 
 			storeOriginal(img);
 			img.setAttribute("src", finalUrl);
@@ -74,26 +78,36 @@
 		}
 	}
 
-	async function getRandomStoredUrl() {
-		const result = await browser.storage.local.get(["userImages"]);
-		const images = result.userImages || [];
-		if (images.length === 0) return null;
-		return images[Math.floor(Math.random() * images.length)].dataUrl;
-	}
-
 	browser.runtime.onMessage.addListener((message) => {
 		if (message.command === "reset") {
 			resetPage();
 			return;
 		}
 		if (message.command === "sharkify") {
-			return sharkify({ url: message.sharkURL, randomizePerImage: false });
+			return sharkify({
+				url: message.sharkURL,
+				randomizePerImage: false,
+				randomnessOneInX: message.randomnessOneInX ?? 333,
+			});
 		}
 	});
 
-	const autoUrl = await getRandomStoredUrl();
+	const storedSettings = await browser.storage.local.get([
+		"userImages",
+		"randomnessOneInX",
+	]);
+	const autoUrl =
+		storedSettings.userImages?.[
+			Math.floor(Math.random() * (storedSettings.userImages?.length || 0))
+		]?.dataUrl;
+	const randomness = storedSettings.randomnessOneInX ?? 333;
+
 	if (autoUrl) {
 		sessionSharkURL = autoUrl;
-		await sharkify({ url: autoUrl, randomizePerImage: true });
+		await sharkify({
+			url: autoUrl,
+			randomizePerImage: true,
+			randomnessOneInX: randomness,
+		});
 	}
 })();
