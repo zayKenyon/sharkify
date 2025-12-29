@@ -7,26 +7,29 @@
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "sharkify@bigshark.party",
-			"strict_min_version": "109.0"
+			"data_collection_permissions": {
+				"required": ["none"]
+			}
 		}
 	},
 	"icons": {
-		"48": "icons/shark-48.png"
+		"48": "src/icons/shark-48.png"
 	},
 	"action": {
 		"default_title": "Sharkify!",
-		"default_popup": "popup/popup.html",
-		"default_icon": "icons/shark-32.png"
+		"default_popup": "src/popup/popup.html",
+		"default_icon": "src/icons/shark-32.png",
+		"default_area": "navbar"
 	},
 	"options_ui": {
-		"page": "upload/upload.html",
+		"page": "src/upload/upload.html",
 		"open_in_tab": true
 	},
 
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
-			"js": ["content_scripts/sharkify.js"]
+			"js": ["src/content_scripts/sharkify.js"]
 		}
 	]
 }
