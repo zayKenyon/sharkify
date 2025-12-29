@@ -18,14 +18,32 @@ function openUploadPage() {
 	browser.runtime.openOptionsPage();
 }
 
+async function isOnOptionsPage() {
+	try {
+		const tabs = await browser.tabs.query({
+			active: true,
+			currentWindow: true,
+		});
+		const activeTab = tabs?.[0];
+		if (!activeTab?.url) return false;
+
+		const optionsUrl = browser.runtime.getURL("src/upload/upload.html");
+		return activeTab.url.startsWith(optionsUrl);
+	} catch {
+		return false;
+	}
+}
+
 async function checkImagesAndUpdateButton() {
 	const result = await browser.storage.local.get(["userImages"]);
 	const images = result.userImages || [];
 	const sharkifyBtn = document.getElementById("sharkify-btn");
+	const resetBtn = document.getElementById("reset-btn");
 
-	if (sharkifyBtn) {
-		sharkifyBtn.disabled = images.length === 0;
-	}
+	const onOptionsPage = await isOnOptionsPage();
+
+	if (sharkifyBtn) sharkifyBtn.disabled = images.length === 0 || onOptionsPage;
+	if (resetBtn) resetBtn.disabled = onOptionsPage;
 
 	return images;
 }
@@ -66,7 +84,15 @@ function setupRandomnessSlider() {
 function wireUI() {
 	document
 		.getElementById("open-upload-tab-btn")
-		?.addEventListener("click", openUploadPage);
+		?.addEventListener("click", () => {
+			// Disable sharkify and reset buttons when opening the options page
+			const sharkifyBtn = document.getElementById("sharkify-btn");
+			const resetBtn = document.getElementById("reset-btn");
+			if (sharkifyBtn) sharkifyBtn.disabled = true;
+			if (resetBtn) resetBtn.disabled = true;
+
+			openUploadPage();
+		});
 
 	document
 		.getElementById("sharkify-btn")

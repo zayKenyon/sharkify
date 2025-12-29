@@ -98,14 +98,28 @@ body {
 
 .btn:disabled {
 	opacity: 0.4;
-	cursor: not-allowed;
-	background: rgba(255, 255, 255, 0.04);
+	cursor: not-allowed !important;
+	background: rgba(255, 255, 255, 0.04) !important;
 	color: rgba(242, 247, 255, 0.5);
 	filter: grayscale(0.6);
 }
 
+.btn:disabled:hover {
+	background: rgba(255, 255, 255, 0.04) !important;
+	transform: none !important;
+}
+
+.btn:disabled:active {
+	transform: none !important;
+}
+
 .btn--primary:disabled {
-	background: rgba(127, 214, 255, 0.2);
+	background: rgba(127, 214, 255, 0.2) !important;
+	filter: grayscale(0.8);
+}
+
+.btn--primary:disabled:hover {
+	background: rgba(127, 214, 255, 0.2) !important;
 	filter: grayscale(0.8);
 }
 
