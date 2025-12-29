@@ -39,6 +39,19 @@ function openLightbox(image) {
 	const name = $("lightbox-name");
 	if (!lightbox || !img || !name) return;
 
+	lightbox.classList.remove("is-portrait");
+
+	img.onload = () => {
+		// If the selected image is portrait, use a narrower modal.
+		try {
+			if (img.naturalHeight > img.naturalWidth) {
+				lightbox.classList.add("is-portrait");
+			}
+		} catch {
+			// ignore
+		}
+	};
+
 	img.src = image.dataUrl;
 	img.alt = image.name;
 	name.textContent = image.name;
@@ -71,7 +84,7 @@ function wireLightbox() {
 		if (target.dataset.close === "true") closeLightbox();
 	});
 
-	$("lightbox")
+	lightbox
 		.querySelector(".lightbox__close")
 		?.addEventListener("click", closeLightbox);
 

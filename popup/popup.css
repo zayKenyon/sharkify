@@ -1,16 +1,15 @@
 :root {
 	--bg: #071225;
-	--card: rgba(255, 255, 255, 0.06);
 	--border: rgba(255, 255, 255, 0.18);
 	--text: #f2f7ff;
 	--muted: rgba(242, 247, 255, 0.78);
 	--primary: #7fd6ff;
 	--primary2: #a8e5ff;
 	--primaryText: #051021;
-	--danger: #ff5c7a;
-	--dangerText: #1b060a;
+	--errorBg: rgba(0, 0, 0, 0.35);
 }
 
+/* Popup base styles */
 html,
 body {
 	width: 320px;
@@ -25,26 +24,17 @@ body {
 		sans-serif;
 	background:
 		radial-gradient(
-			600px 240px at 20% 0%,
+			520px 260px at 15% 0%,
 			rgba(127, 214, 255, 0.55),
 			transparent 62%
 		),
 		radial-gradient(
-			480px 220px at 85% 10%,
+			460px 240px at 85% 10%,
 			rgba(168, 229, 255, 0.35),
 			transparent 58%
-		), linear-gradient(180deg, #0b2552 0%, #071225 70%, #071225 100%);
+		), linear-gradient(180deg, #0b2552 0%, #071225 60%, #071225 100%);
+	background-color: var(--bg);
 	color: var(--text);
-	outline: none;
-}
-
-/* Remove the white focus rings/borders in the popup UI */
-:focus {
-	outline: none;
-}
-
-:focus-visible {
-	outline: none;
 }
 
 .hidden {
@@ -55,7 +45,6 @@ body {
 	display: grid;
 	gap: 10px;
 	padding: 12px;
-	background: transparent;
 }
 
 .btn {
@@ -74,6 +63,8 @@ body {
 		filter 0.15s ease;
 	appearance: none;
 	-webkit-appearance: none;
+	outline: none;
+	box-shadow: none;
 }
 
 .btn:hover {
@@ -82,6 +73,13 @@ body {
 
 .btn:active {
 	transform: translateY(1px);
+}
+
+.btn:focus,
+.btn:focus-visible,
+.btn:-moz-focusring {
+	outline: none !important;
+	box-shadow: none !important;
 }
 
 .btn--primary {
@@ -104,7 +102,11 @@ body {
 }
 
 #error-content {
-	padding: 14px;
-	text-align: center;
+	margin: 12px;
+	padding: 12px;
+	border-radius: 12px;
+	background: var(--errorBg);
 	color: var(--muted);
+	text-align: center;
+	border: 1px solid rgba(255, 255, 255, 0.1);
 }
