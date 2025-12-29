@@ -1,29 +1,59 @@
-/**
- * Main Popup Script
- */
+/** Popup entry. */
 
-import { listenForClicks } from "./eventHandlers.js";
-
-/**
- * There was an error executing the script.
- * Display the popup's error message, and hide the normal UI.
- */
-function reportExecuteScriptError(error) {
-	document.querySelector("#popup-content").classList.add("hidden");
-	document.querySelector("#error-content").classList.remove("hidden");
-	console.error(`Popup error: ${error.message ?? error}`);
+function showError() {
+	document.querySelector("#popup-content")?.classList.add("hidden");
+	document.querySelector("#error-content")?.classList.remove("hidden");
 }
 
-/**
- * When the popup loads, load images and add event handlers.
- */
-console.log("=== Popup script starting ===");
+async function sendToActiveTab(message) {
+	const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+	const tabId = tabs?.[0]?.id;
+	if (!tabId) throw new Error("No active tab");
+	return await browser.tabs.sendMessage(tabId, message);
+}
 
-(async () => {
-	try {
-		listenForClicks();
-		console.log("Popup initialized successfully");
-	} catch (error) {
-		reportExecuteScriptError(error);
-	}
-})();
+function openUploadPage() {
+	browser.runtime.openOptionsPage();
+}
+
+function wireUI() {
+	document
+		.getElementById("open-upload-tab-btn")
+		?.addEventListener("click", openUploadPage);
+
+	document
+		.getElementById("sharkify-btn")
+		?.addEventListener("click", async () => {
+			const result = await browser.storage.local.get(["userImages"]);
+			const images = result.userImages || [];
+			if (images.length === 0) {
+				window.alert("Please upload an image first!");
+				return;
+			}
+			const url = images[Math.floor(Math.random() * images.length)]?.dataUrl;
+			if (!url) return;
+
+			try {
+				await sendToActiveTab({ command: "sharkify", sharkURL: url });
+			} catch (e) {
+				console.error(e);
+				showError();
+			}
+		});
+
+	document.getElementById("reset-btn")?.addEventListener("click", async () => {
+		try {
+			await sendToActiveTab({ command: "reset" });
+		} catch (e) {
+			console.error(e);
+			showError();
+		}
+	});
+}
+
+try {
+	wireUI();
+} catch (e) {
+	console.error(e);
+	showError();
+}

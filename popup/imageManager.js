@@ -1,53 +1,77 @@
 /**
- * Image Management Module
- * Handles uploading and deleting images
+ * Image management for uploads.
  */
 
-import { userImages, saveImages, loadImages } from "./storage.js";
+import { loadImages, saveImages, userImages } from "./storage.js";
 
-async function fileToDataUrl(file) {
+const MAX_BYTES = 5 * 1024 * 1024;
+
+function estimateDataUrlBytes(dataUrl) {
+	const comma = dataUrl.indexOf(",");
+	if (comma === -1) return dataUrl.length;
+	const b64 = dataUrl.slice(comma + 1);
+	return Math.floor((b64.length * 3) / 4);
+}
+
+async function blobToDataUrl(blob) {
 	return await new Promise((resolve, reject) => {
 		const reader = new FileReader();
-		reader.onerror = () => reject(new Error("Error reading file"));
+		reader.onerror = () => reject(new Error("Error reading blob"));
 		reader.onload = (e) => resolve(e.target.result);
-		reader.readAsDataURL(file);
+		reader.readAsDataURL(blob);
 	});
 }
 
-/**
- * Upload a new image
- * @param {File} file
- * @param {{ render?: () => void }} [opts]
- */
-export async function uploadImage(file, opts = {}) {
-	if (!file) throw new Error("No file provided");
-	const created = await uploadImages([file], opts);
-	return created[0];
+async function compressToDataUrl(file) {
+	const url = URL.createObjectURL(file);
+	try {
+		const img = new Image();
+		img.decoding = "async";
+		img.src = url;
+		await img.decode();
+
+		const maxDim = 1280;
+		const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+		const w = Math.max(1, Math.round(img.width * scale));
+		const h = Math.max(1, Math.round(img.height * scale));
+
+		const canvas = document.createElement("canvas");
+		canvas.width = w;
+		canvas.height = h;
+		const ctx = canvas.getContext("2d", { alpha: false });
+		ctx.imageSmoothingEnabled = true;
+		ctx.imageSmoothingQuality = "high";
+		ctx.drawImage(img, 0, 0, w, h);
+
+		let blob = await new Promise((resolve) =>
+			canvas.toBlob(resolve, "image/webp", 0.82),
+		);
+		if (!blob) {
+			blob = await new Promise((resolve) =>
+				canvas.toBlob(resolve, "image/jpeg", 0.78),
+			);
+		}
+
+		const dataUrl = await blobToDataUrl(blob);
+		if (estimateDataUrlBytes(dataUrl) > MAX_BYTES) {
+			throw new Error("Image too large after compression");
+		}
+		return dataUrl;
+	} finally {
+		URL.revokeObjectURL(url);
+	}
 }
 
-/**
- * Upload multiple images
- * @param {File[]} files
- * @param {{ render?: () => void }} [opts]
- * @returns {Promise<Array<{id: string, name: string, dataUrl: string}>>}
- */
-export async function uploadImages(files, opts = {}) {
-	if (!files || files.length === 0) {
-		throw new Error("No files provided");
-	}
-
-	// Ensure we have the latest state in long-lived pages.
+export async function uploadImages(files) {
+	if (!files || files.length === 0) throw new Error("No files provided");
 	await loadImages();
 
 	const created = [];
 	for (const file of files) {
 		if (!file) continue;
-		if (file.size > 5 * 1024 * 1024) {
-			throw new Error(`Image is too large (max 5MB): ${file.name}`);
-		}
-		const dataUrl = await fileToDataUrl(file);
+		const dataUrl = await compressToDataUrl(file);
 		created.push({
-			id: Date.now().toString() + "-" + Math.random().toString(16).slice(2),
+			id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
 			name: file.name,
 			dataUrl,
 		});
@@ -55,37 +79,10 @@ export async function uploadImages(files, opts = {}) {
 
 	userImages.push(...created);
 	await saveImages(userImages);
-
-	try {
-		opts.render?.();
-	} catch (e) {
-		console.warn("Render callback failed (ignored):", e);
-	}
-
 	return created;
 }
 
-/**
- * Delete an image by id (no confirm). Intended for use in the upload page.
- */
-export async function deleteImageById(imageId, opts = {}) {
+export async function deleteImageById(imageId) {
 	await loadImages();
-	const filteredImages = userImages.filter((img) => img.id !== imageId);
-	await saveImages(filteredImages);
-	try {
-		opts.render?.();
-	} catch (e) {
-		console.warn("Render callback failed (ignored):", e);
-	}
-}
-
-/**
- * Delete an image (with confirm). Used from the popup.
- */
-export async function deleteImage(imageId, opts = {}) {
-	const confirmed = window.confirm(
-		"Are you sure you want to delete this image?",
-	);
-	if (!confirmed) return;
-	return deleteImageById(imageId, opts);
+	await saveImages(userImages.filter((img) => img.id !== imageId));
 }
