@@ -18,6 +18,18 @@ function openUploadPage() {
 	browser.runtime.openOptionsPage();
 }
 
+async function checkImagesAndUpdateButton() {
+	const result = await browser.storage.local.get(["userImages"]);
+	const images = result.userImages || [];
+	const sharkifyBtn = document.getElementById("sharkify-btn");
+
+	if (sharkifyBtn) {
+		sharkifyBtn.disabled = images.length === 0;
+	}
+
+	return images;
+}
+
 async function loadRandomness() {
 	const result = await browser.storage.local.get(["randomnessOneInX"]);
 	randomnessOneInX = result.randomnessOneInX ?? 333;
@@ -59,10 +71,8 @@ function wireUI() {
 	document
 		.getElementById("sharkify-btn")
 		?.addEventListener("click", async () => {
-			const result = await browser.storage.local.get(["userImages"]);
-			const images = result.userImages || [];
+			const images = await checkImagesAndUpdateButton();
 			if (images.length === 0) {
-				window.alert("Please upload an image first!");
 				return;
 			}
 			const url = images[Math.floor(Math.random() * images.length)]?.dataUrl;
@@ -94,6 +104,7 @@ try {
 	wireUI();
 	setupRandomnessSlider();
 	loadRandomness();
+	checkImagesAndUpdateButton();
 } catch (e) {
 	console.error(e);
 	showError();

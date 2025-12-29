@@ -96,6 +96,20 @@ body {
 	background: rgba(255, 255, 255, 0.06);
 }
 
+.btn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+	background: rgba(255, 255, 255, 0.04);
+	color: rgba(242, 247, 255, 0.5);
+	filter: grayscale(0.6);
+	pointer-events: none;
+}
+
+.btn--primary:disabled {
+	background: rgba(127, 214, 255, 0.2);
+	filter: grayscale(0.8);
+}
+
 /* extra defensive: some UA styles add inner focus border */
 .btn::-moz-focus-inner {
 	border: 0;
