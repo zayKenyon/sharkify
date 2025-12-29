@@ -1,41 +1,26 @@
 /**
- * CSS to hide everything on the page,
- * except for elements that have the "sharkify-image" class.
- */
-const hidePage = `body > :not(.sharkify-image) {
-                    display: none;
-                  }`;
-
-/**
  * Listen for clicks on the buttons, and send the appropriate message to
  * the content script in the page.
  */
 function listenForClicks() {
 	document.addEventListener("click", (e) => {
 		/**
-		 * Insert the page-hiding CSS into the active tab,
-		 * then get the shark URL and send a "sharkify"
-		 * message to the content script in the active tab.
+		 * Send a "sharkify" message to the content script in the active tab.
 		 */
 		function sharkify(tabs) {
-			browser.tabs.insertCSS({ code: hidePage }).then(() => {
-				const url = browser.runtime.getURL("beasts/shark.jpg");
-				browser.tabs.sendMessage(tabs[0].id, {
-					command: "sharkify",
-					sharkURL: url,
-				});
+			const url = browser.runtime.getURL("beasts/shark.jpg");
+			browser.tabs.sendMessage(tabs[0].id, {
+				command: "sharkify",
+				sharkURL: url,
 			});
 		}
 
 		/**
-		 * Remove the page-hiding CSS from the active tab,
-		 * send a "reset" message to the content script in the active tab.
+		 * Send a "reset" message to the content script in the active tab.
 		 */
 		function reset(tabs) {
-			browser.tabs.removeCSS({ code: hidePage }).then(() => {
-				browser.tabs.sendMessage(tabs[0].id, {
-					command: "reset",
-				});
+			browser.tabs.sendMessage(tabs[0].id, {
+				command: "reset",
 			});
 		}
 

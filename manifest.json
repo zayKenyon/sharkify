@@ -1,26 +1,26 @@
 {
-  "manifest_version": 2,
-  "name": "Sharkify",
-  "version": "1.0",
+	"manifest_version": 2,
+	"name": "Sharkify",
+	"version": "1.0",
 
-  "description": "Randomly replaces images on webpages with shark images.",
+	"description": "Randomly replaces images on webpages with shark images.",
 
-  "permissions": ["activeTab"],
+	"permissions": ["activeTab"],
 
-  "web_accessible_resources": ["beasts/shark.jpg"],
+	"web_accessible_resources": ["beasts/shark.jpg"],
 
-  "icons": { "48": "icons/shark-48.png" },
+	"icons": { "48": "icons/shark-48.png" },
 
-  "browser_action": {
-    "default_title": "Sharkify!",
-    "default_popup": "popup/popup.html",
-    "default_icon": "icons/shark-32.png"
-  },
+	"browser_action": {
+		"default_title": "Sharkify!",
+		"default_popup": "popup/popup.html",
+		"default_icon": "icons/shark-32.png"
+	},
 
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content_scripts/sharkify.js"]
-    }
-  ]
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": ["content_scripts/sharkify.js"]
+		}
+	]
 }
