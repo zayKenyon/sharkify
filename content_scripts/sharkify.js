@@ -10,12 +10,48 @@
 	window.hasRun = true;
 
 	/**
+	 * Preload the shark image for better performance.
+	 * This loads the image into browser cache immediately.
+	 */
+	const sharkURL = browser.runtime.getURL("beasts/shark.jpg");
+	const preloadImage = new Image();
+	preloadImage.src = sharkURL;
+
+	/**
+	 * CSS to hide everything on the page,
+	 * except for elements that have the "sharkify-image" class.
+	 */
+	const hidePage = `body > :not(.sharkify-image) {
+                    display: none;
+                  }`;
+
+	/**
+	 * Add or remove the page-hiding CSS
+	 */
+	function addHidePageCSS() {
+		if (!document.getElementById("sharkify-style")) {
+			const style = document.createElement("style");
+			style.id = "sharkify-style";
+			style.textContent = hidePage;
+			document.head.appendChild(style);
+		}
+	}
+
+	function removeHidePageCSS() {
+		const style = document.getElementById("sharkify-style");
+		if (style) {
+			style.remove();
+		}
+	}
+
+	/**
 	 * Given a URL to a shark image, remove all existing sharks, then
 	 * create and style an IMG node pointing to
 	 * that image, then insert the node into the document.
 	 */
 	function insertShark(sharkURL) {
 		removeExistingSharks();
+		addHidePageCSS();
 		const sharkImage = document.createElement("img");
 		sharkImage.setAttribute("src", sharkURL);
 		sharkImage.style.height = "100vh";
@@ -31,6 +67,7 @@
 		for (const shark of existingSharks) {
 			shark.remove();
 		}
+		removeHidePageCSS();
 	}
 
 	/**
@@ -44,4 +81,12 @@
 			removeExistingSharks();
 		}
 	});
+
+	/**
+	 * On page load, randomly sharkify with 1/3 chance
+	 */
+	const randomChance = Math.random();
+	if (randomChance < 1/3) {
+		insertShark(sharkURL);
+	}
 })();

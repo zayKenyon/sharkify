@@ -7,6 +7,8 @@
 
   "permissions": ["activeTab"],
 
+  "web_accessible_resources": ["beasts/shark.jpg"],
+
   "icons": { "48": "icons/shark-48.png" },
 
   "browser_action": {
@@ -18,7 +20,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["sharkify.js"]
+      "js": ["content_scripts/sharkify.js"]
     }
   ]
 }
