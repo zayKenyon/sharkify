@@ -210,6 +210,7 @@ body {
 	height: 140px;
 	object-fit: cover;
 	display: block;
+	cursor: pointer;
 }
 
 .tile__meta {
@@ -226,7 +227,7 @@ body {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	max-width: 120px;
+	max-width: 180px;
 }
 
 .tile__actions {

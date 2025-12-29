@@ -54,7 +54,12 @@ function openLightbox(image) {
 
 	img.src = image.dataUrl;
 	img.alt = image.name;
-	name.textContent = image.name;
+
+	// Calculate file size in KibiBytes from data URL
+	const sizeBytes = Math.floor((image.dataUrl.length * 3) / 4);
+	const sizeKiB = Math.floor(sizeBytes / 1024);
+
+	name.textContent = `${image.name} · ${sizeKiB}KiB`;
 
 	lightbox.classList.add("is-open");
 	lightbox.setAttribute("aria-hidden", "false");
@@ -122,7 +127,12 @@ function renderGallery() {
 		const name = document.createElement("div");
 		name.className = "tile__name";
 		name.title = image.name;
-		name.textContent = image.name;
+
+		// Calculate file size in KibiBytes from data URL
+		const sizeBytes = Math.floor((image.dataUrl.length * 3) / 4);
+		const sizeKiB = Math.floor(sizeBytes / 1024);
+
+		name.textContent = `${image.name} · ${sizeKiB}KiB`;
 
 		const actions = document.createElement("div");
 		actions.className = "tile__actions";

@@ -12,15 +12,17 @@
 			}
 		}
 	},
+
 	"icons": {
 		"48": "src/icons/shark-48.png"
 	},
+
 	"action": {
 		"default_title": "Sharkify!",
 		"default_popup": "src/popup/popup.html",
-		"default_icon": "src/icons/shark-32.png",
-		"default_area": "navbar"
+		"default_icon": "src/icons/shark-32.png"
 	},
+
 	"options_ui": {
 		"page": "src/upload/upload.html",
 		"open_in_tab": true
