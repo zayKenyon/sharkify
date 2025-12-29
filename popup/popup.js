@@ -1,57 +1,8 @@
 /**
- * Listen for clicks on the buttons, and send the appropriate message to
- * the content script in the page.
+ * Main Popup Script
  */
-function listenForClicks() {
-	document.addEventListener("click", (e) => {
-		/**
-		 * Send a "sharkify" message to the content script in the active tab.
-		 */
-		function sharkify(tabs) {
-			const url = browser.runtime.getURL("beasts/shark.jpg");
-			browser.tabs.sendMessage(tabs[0].id, {
-				command: "sharkify",
-				sharkURL: url,
-			});
-		}
 
-		/**
-		 * Send a "reset" message to the content script in the active tab.
-		 */
-		function reset(tabs) {
-			browser.tabs.sendMessage(tabs[0].id, {
-				command: "reset",
-			});
-		}
-
-		/**
-		 * Just log the error to the console.
-		 */
-		function reportError(error) {
-			console.error(`Could not sharkify: ${error}`);
-		}
-
-		/**
-		 * Get the active tab,
-		 * then call "sharkify()" or "reset()" as appropriate.
-		 */
-		if (e.target.tagName !== "BUTTON" || !e.target.closest("#popup-content")) {
-			// Ignore when click is not on a button within <div id="popup-content">.
-			return;
-		}
-		if (e.target.type === "reset") {
-			browser.tabs
-				.query({ active: true, currentWindow: true })
-				.then(reset)
-				.catch(reportError);
-		} else {
-			browser.tabs
-				.query({ active: true, currentWindow: true })
-				.then(sharkify)
-				.catch(reportError);
-		}
-	});
-}
+import { listenForClicks } from "./eventHandlers.js";
 
 /**
  * There was an error executing the script.
@@ -60,15 +11,19 @@ function listenForClicks() {
 function reportExecuteScriptError(error) {
 	document.querySelector("#popup-content").classList.add("hidden");
 	document.querySelector("#error-content").classList.remove("hidden");
-	console.error(`Failed to execute sharkify content script: ${error.message}`);
+	console.error(`Popup error: ${error.message ?? error}`);
 }
 
 /**
- * When the popup loads, inject a content script into the active tab,
- * and add a click handler.
- * If we couldn't inject the script, handle the error.
+ * When the popup loads, load images and add event handlers.
  */
-browser.tabs
-	.executeScript({ file: "/content_scripts/sharkify.js" })
-	.then(listenForClicks)
-	.catch(reportExecuteScriptError);
+console.log("=== Popup script starting ===");
+
+(async () => {
+	try {
+		listenForClicks();
+		console.log("Popup initialized successfully");
+	} catch (error) {
+		reportExecuteScriptError(error);
+	}
+})();

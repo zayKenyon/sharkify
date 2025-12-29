@@ -2,7 +2,7 @@
 	"name": "sharkify",
 	"version": "1.0.0",
 	"description": "",
-	"main": "content_scripts/sharkify.js",
+	"main": "manifest.json",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

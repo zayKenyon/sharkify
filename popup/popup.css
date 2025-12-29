@@ -1,31 +1,110 @@
+:root {
+	--bg: #071225;
+	--card: rgba(255, 255, 255, 0.06);
+	--border: rgba(255, 255, 255, 0.18);
+	--text: #f2f7ff;
+	--muted: rgba(242, 247, 255, 0.78);
+	--primary: #7fd6ff;
+	--primary2: #a8e5ff;
+	--primaryText: #051021;
+	--danger: #ff5c7a;
+	--dangerText: #1b060a;
+}
+
 html,
 body {
-	width: 100px;
+	width: 320px;
+	margin: 0;
+	padding: 0;
+	font-family:
+		system-ui,
+		-apple-system,
+		Segoe UI,
+		Roboto,
+		Arial,
+		sans-serif;
+	background:
+		radial-gradient(
+			600px 240px at 20% 0%,
+			rgba(127, 214, 255, 0.55),
+			transparent 62%
+		),
+		radial-gradient(
+			480px 220px at 85% 10%,
+			rgba(168, 229, 255, 0.35),
+			transparent 58%
+		), linear-gradient(180deg, #0b2552 0%, #071225 70%, #071225 100%);
+	color: var(--text);
+	outline: none;
+}
+
+/* Remove the white focus rings/borders in the popup UI */
+:focus {
+	outline: none;
+}
+
+:focus-visible {
+	outline: none;
 }
 
 .hidden {
 	display: none;
 }
 
-button {
-	border: none;
-	width: 100%;
-	margin: 3% auto;
-	padding: 4px;
-	text-align: center;
-	font-size: 1.5em;
+.popup {
+	display: grid;
+	gap: 10px;
+	padding: 12px;
+	background: transparent;
+}
+
+.btn {
+	border: 1px solid var(--border);
+	border-radius: 14px;
+	padding: 11px 12px;
 	cursor: pointer;
-	background-color: #e5f2f2;
+	font-size: 14px;
+	font-weight: 750;
+	letter-spacing: 0.2px;
+	background: rgba(255, 255, 255, 0.08);
+	color: var(--text);
+	transition:
+		transform 0.06s ease,
+		background 0.15s ease,
+		filter 0.15s ease;
+	appearance: none;
+	-webkit-appearance: none;
 }
 
-button:hover {
-	background-color: #cff2f2;
+.btn:hover {
+	background: rgba(255, 255, 255, 0.12);
 }
 
-button[type="reset"] {
-	background-color: #fbfbc9;
+.btn:active {
+	transform: translateY(1px);
 }
 
-button[type="reset"]:hover {
-	background-color: #eaea9d;
+.btn--primary {
+	background: linear-gradient(180deg, var(--primary2), var(--primary));
+	border-color: transparent;
+	color: var(--primaryText);
+}
+
+.btn--primary:hover {
+	filter: brightness(1.02);
+}
+
+.btn--ghost {
+	background: rgba(255, 255, 255, 0.06);
+}
+
+/* extra defensive: some UA styles add inner focus border */
+.btn::-moz-focus-inner {
+	border: 0;
+}
+
+#error-content {
+	padding: 14px;
+	text-align: center;
+	color: var(--muted);
 }

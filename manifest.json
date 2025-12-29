@@ -1,26 +1,32 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "Sharkify",
 	"version": "1.0",
-
 	"description": "Randomly replaces images on webpages with shark images.",
-
-	"permissions": ["activeTab"],
-
-	"web_accessible_resources": ["beasts/shark.jpg"],
-
-	"icons": { "48": "icons/shark-48.png" },
-
-	"browser_action": {
+	"permissions": ["storage", "activeTab"],
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "sharkify@bigshark.party",
+			"strict_min_version": "109.0"
+		}
+	},
+	"icons": {
+		"48": "icons/shark-48.png"
+	},
+	"action": {
 		"default_title": "Sharkify!",
 		"default_popup": "popup/popup.html",
 		"default_icon": "icons/shark-32.png"
+	},
+	"options_ui": {
+		"page": "upload/upload.html",
+		"open_in_tab": true
 	},
 
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
-			"js": ["content_scripts/sharkify.js"]
+			"js": ["content_scripts/loader.js"]
 		}
 	]
 }

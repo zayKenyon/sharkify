@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Sharkify – Upload</title>
+	<link rel="stylesheet" href="upload.css" />
+</head>
+<body>
+	<header class="topbar">
+		<div class="topbar__inner">
+			<h1>Sharkify</h1>
+			<p>Upload and manage your images</p>
+		</div>
+	</header>
+
+	<main class="container">
+		<section class="card">
+			<div class="card__row">
+				<label class="file">
+					<input type="file" id="image-upload" accept="image/*" multiple />
+					<span class="file__label">Choose images…</span>
+				</label>
+				<button id="delete-all-btn" class="btn btn--danger" type="button">Delete all</button>
+			</div>
+			<div class="muted note">Max size: 5MB per image.</div>
+			<div id="status" class="status" role="status" aria-live="polite"></div>
+		</section>
+
+		<section class="card">
+			<div class="card__header">
+				<h2>Your uploaded images</h2>
+				<div id="count" class="muted"></div>
+			</div>
+			<div id="gallery" class="gallery" aria-label="Uploaded images"></div>
+		</section>
+	</main>
+
+	<div id="lightbox" class="lightbox" aria-hidden="true">
+		<div class="lightbox__backdrop" data-close="true"></div>
+		<div class="lightbox__content" role="dialog" aria-modal="true" aria-label="Image preview">
+			<button class="lightbox__close" type="button" aria-label="Close">×</button>
+			<img id="lightbox-img" alt="" />
+			<div id="lightbox-name" class="lightbox__name"></div>
+		</div>
+	</div>
+
+	<script type="module" src="upload.js"></script>
+</body>
+</html>
+

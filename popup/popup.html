@@ -1,19 +1,22 @@
-<!doctype html>
-<html lang="en-US">
+<!DOCTYPE html>
+<html lang="en-GB">
 <head>
     <meta charset="utf-8" />
+    <title>Sharkify</title>
     <link rel="stylesheet" href="popup.css" />
 </head>
 
 <body>
-<div id="popup-content">
-    <button>Shark</button>
-    <button type="reset">Reset</button>
+<div id="popup-content" class="popup">
+    <button id="open-upload-tab-btn" class="btn btn--primary" type="button">Manage Images</button>
+    <button id="sharkify-btn" class="btn" type="button">Sharkify</button>
+    <button id="reset-btn" class="btn btn--ghost" type="button">Reset</button>
 </div>
+
 <div id="error-content" class="hidden">
     <p>Can't sharkify this web page.</p>
     <p>Try a different page.</p>
 </div>
-<script src="popup.js"></script>
+<script type="module" src="popup.js"></script>
 </body>
 </html>
