@@ -278,6 +278,8 @@ body {
 	transition:
 		transform 260ms ease,
 		opacity 260ms ease;
+	display: flex;
+	flex-direction: column;
 }
 
 .lightbox.is-open .lightbox__content {
@@ -294,7 +296,7 @@ body {
 .lightbox.is-portrait #lightbox-img {
 	width: auto;
 	max-width: calc(100vw - 28px);
-	max-height: calc(86vh - 70px);
+	max-height: 100%;
 }
 
 .lightbox__close {
@@ -325,9 +327,11 @@ body {
 	display: block;
 	width: 100%;
 	height: auto;
-	max-height: calc(86vh - 70px);
+	max-height: 100%;
 	object-fit: contain;
 	background: rgba(0, 0, 0, 0.2);
+	flex-shrink: 1;
+	min-height: 0;
 }
 
 .lightbox__name {
@@ -337,4 +341,5 @@ body {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	flex-shrink: 0;
 }
