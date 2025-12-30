@@ -3,7 +3,7 @@
 	"name": "Sharkify",
 	"version": "1.0",
 	"description": "Randomly replaces images on webpages with shark images.",
-	"permissions": ["storage", "activeTab"],
+	"permissions": ["storage", "activeTab", "unlimitedStorage"],
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "sharkify@bigshark.party",
