@@ -1,6 +1,9 @@
 # Sharkify
 A Firefox extension that randomly replaces images on webpages with your custom uploaded images.
 
+[![Sign and Release XPI](https://github.com/zayKenyon/sharkify/actions/workflows/release-xpi.yml/badge.svg)](https://github.com/zayKenyon/sharkify/actions/workflows/release-xpi.yml)
+---
+
 ## Features
 - Upload and manage custom images
 - Configurable replacement probability
