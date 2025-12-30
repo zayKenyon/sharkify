@@ -1,8 +1,18 @@
 {
 	"name": "sharkify",
 	"version": "1.0.0",
-	"description": "",
+	"description": "A Firefox extension that randomly replaces images on web pages with your uploaded images",
 	"main": "manifest.json",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/zayKenyon/sharkify.git"
+	},
+	"author": "zayKenyon",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/zayKenyon/sharkify/issues"
+	},
+	"homepage": "https://github.com/zayKenyon/sharkify#readme",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "dotenv -e .env -- bash -c 'web-ext run --keep-profile-changes --firefox=\"$FIREFOX_BINARY\"'",

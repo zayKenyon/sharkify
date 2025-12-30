@@ -1,30 +1,20 @@
-# Sharkify Browser Extension
-
-A fun browser extension that randomly replaces images on webpages with your uploaded images.
-
+# Sharkify
+A Firefox extension that randomly replaces images on webpages with your custom uploaded images.
 ## Features
+- Upload and manage custom images
+- Configurable replacement probability
+- Manual Sharkify/Reset controls
+- Persistent local storage
 
-- Auto-replaces some images on pages you visit
-- Upload one or many images and manage them in a simple gallery
-- Delete images anytime
-- Manual controls: Sharkify / Reset
+## Usage
+1. Click the extension icon
+2. Click **Manage Images** and upload your images
+3. Adjust the randomness slider
 
-## How to Use
-
-1. Click the extension icon.
-2. Click **Upload / Manage Images…**.
-3. Choose one or more image files and click **Upload**.
-4. Your images appear in the gallery and will be used randomly.
-
-## Notes
-
-- Images are stored locally using the browser storage API.
-- Max size: 5MB per image.
-
-## Installation
-
-- Firefox: `about:debugging` → This Firefox → Load Temporary Add-on
-
-## Privacy
-
-All images are stored locally in your browser. No data is sent to any external servers.
+## Development
+```bash
+npm install
+npm start       # Run in Firefox
+npm run build   # Build extension
+```
+Copy `.env.example` to `.env` and configure for signing.
