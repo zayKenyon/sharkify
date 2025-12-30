@@ -1,22 +1,26 @@
 {
 	"manifest_version": 3,
 	"name": "Sharkify",
-	"version": "1.0",
+	"version": "1.0.1",
 	"description": "Randomly replaces images on webpages with shark images.",
-	"permissions": ["storage", "activeTab", "unlimitedStorage"],
+	"permissions": [
+		"storage",
+		"activeTab",
+		"unlimitedStorage"
+	],
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "sharkify@bigshark.party",
 			"data_collection_permissions": {
-				"required": ["none"]
+				"required": [
+					"none"
+				]
 			}
 		}
 	},
-
 	"icons": {
 		"48": "src/icons/shark-48.png"
 	},
-
 	"action": {
 		"default_title": "Sharkify!",
 		"default_popup": "src/popup/popup.html",
@@ -31,16 +35,18 @@
 			}
 		]
 	},
-
 	"options_ui": {
 		"page": "src/upload/upload.html",
 		"open_in_tab": true
 	},
-
 	"content_scripts": [
 		{
-			"matches": ["<all_urls>"],
-			"js": ["src/content_scripts/sharkify.js"]
+			"matches": [
+				"<all_urls>"
+			],
+			"js": [
+				"src/content_scripts/sharkify.js"
+			]
 		}
 	]
 }

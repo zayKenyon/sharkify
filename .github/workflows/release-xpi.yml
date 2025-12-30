@@ -59,7 +59,7 @@ jobs:
             --channel="${WEB_EXT_CHANNEL:-unlisted}" \
             --artifacts-dir=web-ext-artifacts \
             --timeout=900000 \
-            --ignore-files ".git" ".github" "node_modules" "web-ext-artifacts" "dist" ".env" ".amo-upload-uuid"
+            --ignore-files ".git" ".github" "scripts" "node_modules" "web-ext-artifacts" "dist" ".env" ".amo-upload-uuid"
 
       - name: Collect artefacts
         run: |

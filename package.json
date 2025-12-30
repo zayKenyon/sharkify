@@ -1,6 +1,6 @@
 {
 	"name": "sharkify",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A Firefox extension that randomly replaces images on web pages with your uploaded images",
 	"main": "manifest.json",
 	"repository": {
@@ -16,13 +16,17 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "dotenv -e .env -- bash -c 'web-ext run --keep-profile-changes --firefox=\"$FIREFOX_BINARY\"'",
-		"build": "web-ext build --overwrite-dest",
-		"sign": "dotenv -e .env -- bash -c 'web-ext sign --api-key=\"$WEB_EXT_API_KEY\" --api-secret=\"$WEB_EXT_API_SECRET\" --channel=\"$WEB_EXT_CHANNEL\"'",
-		"lint": "web-ext lint",
-		"format": "npx @biomejs/biome format --write"
+		"build": "web-ext build --overwrite-dest --ignore-files \"scripts\" \".github\" \"node_modules\" \"web-ext-artifacts\" \"dist\" \".env\" \".amo-upload-uuid\"",
+		"sign": "dotenv -e .env -- bash -c 'web-ext sign --api-key=\"$WEB_EXT_API_KEY\" --api-secret=\"$WEB_EXT_API_SECRET\" --channel=\"$WEB_EXT_CHANNEL\" --ignore-files \"scripts\" \".github\" \"node_modules\" \"web-ext-artifacts\" \"dist\" \".env\" \".amo-upload-uuid\"'",
+		"lint": "web-ext lint --ignore-files \"scripts\"",
+		"format": "npx @biomejs/biome format --write",
+		"bump": "./scripts/bump-version.sh",
+		"release:commit": "bash -c 'v=$(node -p \"require(\\\"./package.json\\\").version\"); git add package.json package-lock.json manifest.json && git commit -m \"chore(release): v${v}\"'",
+		"release:tag": "bash -c 'v=$(node -p \"require(\\\"./package.json\\\").version\"); git tag v${v}'",
+		"release:push": "git push origin main --tags",
+		"release": "bash -c 'set -euo pipefail; npm run bump -- \"$1\"; npm run lint; npm run release:commit; npm run release:tag' --"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.10",
 		"dotenv-cli": "^11.0.0",
 		"web-ext": "^9.2.0"
 	}
