@@ -1,0 +1,86 @@
+name: Sign and Release XPI
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'AMO channel (unlisted or listed). Defaults to unlisted.'
+        required: false
+        default: 'unlisted'
+
+permissions:
+  contents: write
+
+jobs:
+  sign-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Sign
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.AMO_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.AMO_API_SECRET }}
+          WEB_EXT_CHANNEL: ${{ github.event.inputs.channel || secrets.AMO_CHANNEL }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${WEB_EXT_API_KEY:-}" ] || [ -z "${WEB_EXT_API_SECRET:-}" ]; then
+            echo "Missing GitHub secrets: AMO_API_KEY and AMO_API_SECRET." >&2
+            exit 1
+          fi
+
+          rm -f .amo-upload-uuid || true
+
+          npx web-ext sign \
+            --api-key="$WEB_EXT_API_KEY" \
+            --api-secret="$WEB_EXT_API_SECRET" \
+            --channel="${WEB_EXT_CHANNEL:-unlisted}" \
+            --artifacts-dir=web-ext-artifacts \
+            --timeout=900000 \
+            --ignore-files ".git" ".github" "node_modules" "web-ext-artifacts" "dist" ".env" ".amo-upload-uuid"
+
+      - name: Collect artefacts
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+
+          find web-ext-artifacts -maxdepth 1 -type f -name "*.xpi" -exec cp -v {} dist/ \;
+          find web-ext-artifacts -maxdepth 1 -type f -name "*.zip" -exec cp -v {} dist/ \; || true
+
+          if ! ls dist/*.xpi >/dev/null 2>&1; then
+            echo "No .xpi produced." >&2
+            exit 1
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: false
+          body: |
+            **Install (Firefox):** download the `.xpi` from the Assets below, then open Firefox → `about:addons` → ⚙️ → **Install Add-on From File…** and select the `.xpi`.
+          files: |
+            dist/*.xpi
+            dist/*.zip
