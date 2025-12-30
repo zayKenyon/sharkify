@@ -11,12 +11,16 @@
 				--fg: #ffffff;
 				--muted: rgba(255, 255, 255, 0.75);
 				--accent: #1e90ff;
+				--card: rgba(255, 255, 255, 0.06);
+				--card-border: rgba(255, 255, 255, 0.18);
 			}
 			@media (prefers-color-scheme: light) {
 				:root {
 					--bg: #f7fbff;
 					--fg: #0b1220;
 					--muted: rgba(11, 18, 32, 0.75);
+					--card: rgba(11, 18, 32, 0.04);
+					--card-border: rgba(11, 18, 32, 0.14);
 				}
 			}
 			body {
@@ -68,6 +72,28 @@
 				margin-top: 26px;
 				color: var(--muted);
 			}
+
+			.hero {
+				margin: 22px 0 8px;
+				background: var(--card);
+				border: 1px solid var(--card-border);
+				border-radius: 18px;
+				overflow: hidden;
+			}
+
+			.hero img {
+				display: block;
+				width: 100%;
+				height: min(52vh, 420px);
+				object-fit: cover;
+				object-position: center;
+			}
+
+			.hero figcaption {
+				padding: 10px 14px;
+				color: var(--muted);
+				font-size: 14px;
+			}
 		</style>
 	</head>
 	<body>
@@ -77,6 +103,11 @@
 				A Firefox extension that randomly replaces images on webpages with your custom
 				uploaded images.
 			</p>
+
+			<figure class="hero">
+				<img src="./shark.jpg" alt="A very large shark" loading="eager" />
+				<figcaption>Bring your own sharks. Sharkify replaces images with your uploads.</figcaption>
+			</figure>
 
 			<div class="cta">
 				<a
