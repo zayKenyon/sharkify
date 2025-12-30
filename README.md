@@ -1,6 +1,8 @@
 # Sharkify
 A Firefox extension that randomly replaces images on webpages with your custom uploaded images.
 
+Homepage: https://bigshark.party
+
 [![Sign and Release XPI](https://github.com/zayKenyon/sharkify/actions/workflows/release-xpi.yml/badge.svg)](https://github.com/zayKenyon/sharkify/actions/workflows/release-xpi.yml)
 ---
 
@@ -11,7 +13,11 @@ A Firefox extension that randomly replaces images on webpages with your custom u
 - Persistent local storage
 
 ## Install
-Download the latest signed `.xpi` from [Releases](https://github.com/zayKenyon/sharkify/releases/latest) and install via
+Download the latest signed `.xpi` from:
+- https://bigshark.party
+- or GitHub Releases: https://github.com/zayKenyon/sharkify/releases/latest
+
+Install via
 Firefox: `about:addons` → ⚙️ → **Install Add-on From File…**
 
 ## Usage

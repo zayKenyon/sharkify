@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Sharkify</title>
+		<style>
+			:root {
+				color-scheme: light dark;
+				--bg: #0b1220;
+				--fg: #ffffff;
+				--muted: rgba(255, 255, 255, 0.75);
+				--accent: #1e90ff;
+			}
+			@media (prefers-color-scheme: light) {
+				:root {
+					--bg: #f7fbff;
+					--fg: #0b1220;
+					--muted: rgba(11, 18, 32, 0.75);
+				}
+			}
+			body {
+				margin: 0;
+				font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+					Noto Sans, sans-serif;
+				background: var(--bg);
+				color: var(--fg);
+			}
+			main {
+				max-width: 760px;
+				margin: 0 auto;
+				padding: 48px 20px;
+			}
+			h1 {
+				margin: 0 0 8px;
+				font-size: 40px;
+			}
+			p {
+				margin: 0 0 18px;
+				color: var(--muted);
+				line-height: 1.5;
+			}
+			.cta {
+				display: flex;
+				gap: 12px;
+				flex-wrap: wrap;
+				margin-top: 18px;
+			}
+			a {
+				color: var(--fg);
+				text-decoration: none;
+				border: 1px solid rgba(255, 255, 255, 0.25);
+				padding: 10px 14px;
+				border-radius: 10px;
+				display: inline-block;
+			}
+			@media (prefers-color-scheme: light) {
+				a {
+					border-color: rgba(11, 18, 32, 0.25);
+				}
+			}
+			a.primary {
+				border-color: transparent;
+				background: var(--accent);
+			}
+			small {
+				display: block;
+				margin-top: 26px;
+				color: var(--muted);
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>Sharkify</h1>
+			<p>
+				A Firefox extension that randomly replaces images on webpages with your custom
+				uploaded images.
+			</p>
+
+			<div class="cta">
+				<a
+					id="download-xpi"
+					class="primary"
+					href="https://github.com/zayKenyon/sharkify/releases/latest"
+					rel="noopener"
+					>Download latest XPI</a
+				>
+				<a href="https://github.com/zayKenyon/sharkify">Source on GitHub</a>
+			</div>
+
+			<small>
+				Install in Firefox: download the <code>.xpi</code> → open
+				<code>about:addons</code> → ⚙️ → <strong>Install Add-on From File…</strong>
+			</small>
+		</main>
+
+		<script>
+			(async () => {
+				const owner = "zayKenyon";
+				const repo = "sharkify";
+				const button = document.getElementById("download-xpi");
+				if (!button) return;
+
+				const fallback = button.href;
+
+				try {
+					const res = await fetch(
+						`https://api.github.com/repos/${owner}/${repo}/releases/latest`,
+						{ headers: { Accept: "application/vnd.github+json" } },
+					);
+
+					if (!res.ok) {
+						button.href = fallback;
+						return;
+					}
+
+					const data = await res.json();
+					const assets = Array.isArray(data.assets) ? data.assets : [];
+					const xpi = assets.find(
+						(a) =>
+							a &&
+							typeof a.name === "string" &&
+							a.name.toLowerCase().endsWith(".xpi") &&
+							typeof a.browser_download_url === "string",
+					);
+
+					if (xpi) {
+						button.href = xpi.browser_download_url;
+						button.textContent = `Download ${data.tag_name || "latest"} XPI`;
+						return;
+					}
+
+					button.href =
+						typeof data.html_url === "string" ? data.html_url : fallback;
+				} catch {
+					button.href = fallback;
+				}
+			})();
+		</script>
+	</body>
+</html>

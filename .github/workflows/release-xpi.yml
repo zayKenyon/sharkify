@@ -38,6 +38,23 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify versions match tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          set -euo pipefail
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          MANIFEST_VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('manifest.json','utf8')).version)")
+          PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
+
+          echo "Tag version:      ${TAG_VERSION}"
+          echo "Manifest version: ${MANIFEST_VERSION}"
+          echo "Package version:  ${PACKAGE_VERSION}"
+
+          if [ "$TAG_VERSION" != "$MANIFEST_VERSION" ] || [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "Version mismatch: tag must match manifest.json and package.json. Re-tag the correct commit." >&2
+            exit 1
+          fi
+
       - name: Sign
         env:
           WEB_EXT_API_KEY: ${{ secrets.AMO_API_KEY }}
