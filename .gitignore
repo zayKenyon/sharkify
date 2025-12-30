@@ -2,3 +2,8 @@
 node_modules/
 
 .idea/
+
+web-ext-artifacts/*
+.amo-upload-uuid
+
+.env

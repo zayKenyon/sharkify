@@ -9,9 +9,9 @@
 		"start:verbose": "web-ext run --keep-profile-changes --profile-create-if-missing --verbose",
 		"build": "web-ext build --overwrite-dest",
 		"sign": "dotenv -- web-ext sign --api-key=$WEB_EXT_API_KEY --api-secret=$WEB_EXT_API_SECRET --channel=$WEB_EXT_CHANNEL",
-		"lint": "web-ext lint"
+		"lint": "web-ext lint",
+		"format": "npx @biomejs/biome format --write"
 	},
-	"private": true,
 	"devDependencies": {
 		"@biomejs/biome": "2.3.10",
 		"dotenv-cli": "^11.0.0",
