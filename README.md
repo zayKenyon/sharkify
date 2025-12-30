@@ -4,6 +4,7 @@ A Firefox extension that randomly replaces images on webpages with your custom u
 Homepage: https://bigshark.party
 
 [![Sign and Release XPI](https://github.com/zayKenyon/sharkify/actions/workflows/release-xpi.yml/badge.svg)](https://github.com/zayKenyon/sharkify/actions/workflows/release-xpi.yml)
+[![Deploy Pages](https://github.com/zayKenyon/sharkify/actions/workflows/pages.yml/badge.svg)](https://github.com/zayKenyon/sharkify/actions/workflows/pages.yml)
 ---
 
 ## Features
