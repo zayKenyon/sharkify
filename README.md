@@ -1,8 +1,6 @@
 # Sharkify
 A Firefox extension that randomly replaces images on webpages with your custom uploaded images.
 
-Homepage: https://bigshark.party
-
 [![Sign and Release XPI](https://github.com/zayKenyon/sharkify/actions/workflows/release-xpi.yml/badge.svg)](https://github.com/zayKenyon/sharkify/actions/workflows/release-xpi.yml)
 [![Deploy Pages](https://github.com/zayKenyon/sharkify/actions/workflows/pages.yml/badge.svg)](https://github.com/zayKenyon/sharkify/actions/workflows/pages.yml)
 ---
@@ -18,8 +16,7 @@ Download the latest signed `.xpi` from:
 - https://bigshark.party
 - or GitHub Releases: https://github.com/zayKenyon/sharkify/releases/latest
 
-Install via
-Firefox: `about:addons` → ⚙️ → **Install Add-on From File…**
+Install via Firefox: `about:addons` → ⚙️ → **Install Add-on From File…**
 
 ## Usage
 1. Click the extension icon
@@ -32,4 +29,4 @@ npm install
 npm start       # Run in Firefox
 npm run build   # Build extension
 ```
-Copy `.env.example` to `.env` and configure for signing.
+Rename `.env.example` to `.env` and configure for signing.
