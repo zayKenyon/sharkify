@@ -72,7 +72,8 @@
 
 	function restoreSharkifiedImage(img) {
 		// Avoid redundant DOM writes
-		if (img.getAttribute("src") !== persistentSharkURL) img.setAttribute("src", persistentSharkURL);
+		if (img.getAttribute("src") !== persistentSharkURL)
+			img.setAttribute("src", persistentSharkURL);
 		if (img.hasAttribute("srcset")) img.removeAttribute("srcset");
 		if (img.hasAttribute("sizes")) img.removeAttribute("sizes");
 	}
@@ -108,7 +109,11 @@
 
 	function updateAutoModeConfig(randomizePerImage, randomnessOneInX) {
 		autoModeConfig = randomizePerImage
-			? { enabled: true, probability: calcProbability(randomnessOneInX), mode: "auto" }
+			? {
+					enabled: true,
+					probability: calcProbability(randomnessOneInX),
+					mode: "auto",
+				}
 			: persistentSharkURL
 				? { enabled: true, probability: 1, mode: "manual" }
 				: null;

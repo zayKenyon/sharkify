@@ -40,7 +40,8 @@ body {
 			900px 420px at 85% 10%,
 			rgba(168, 229, 255, 0.35),
 			transparent 58%
-		), linear-gradient(180deg, #0b2552 0%, #071225 60%, #071225 100%);
+		),
+		linear-gradient(180deg, #0b2552 0%, #071225 60%, #071225 100%);
 	color: var(--text);
 }
 
