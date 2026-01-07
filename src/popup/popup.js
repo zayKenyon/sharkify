@@ -1,4 +1,4 @@
-let randomnessOneInX = 333; // default 1 in 333 images
+let randomnessOneInX = 150; // default 1 in 150 images
 
 function showError() {
 	document.querySelector("#popup-content")?.classList.add("hidden");
@@ -53,7 +53,7 @@ async function checkImagesAndUpdateButton() {
 
 async function loadRandomness() {
 	const result = await browser.storage.local.get(["randomnessOneInX"]);
-	randomnessOneInX = result.randomnessOneInX ?? 333;
+	randomnessOneInX = result.randomnessOneInX ?? 150;
 
 	const slider = document.getElementById("randomness-input");
 	const valueDisplay = document.getElementById("randomness-value");

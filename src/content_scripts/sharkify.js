@@ -60,7 +60,7 @@
 	}
 
 	function calcProbability(randomnessOneInX) {
-		return 1 / (randomnessOneInX ?? 333);
+		return 1 / (randomnessOneInX ?? 150);
 	}
 
 	function getApplyParams() {
@@ -190,7 +190,7 @@
 			return sharkify({
 				url: persistentSharkURL || message.sharkURL,
 				randomizePerImage: false,
-				randomnessOneInX: message.randomnessOneInX ?? 333,
+				randomnessOneInX: message.randomnessOneInX ?? 150,
 			}).then(() => {
 				updateAutoModeConfig(false, message.randomnessOneInX);
 			});
@@ -205,7 +205,7 @@
 		storedSettings.userImages?.[
 			Math.floor(Math.random() * (storedSettings.userImages?.length || 0))
 		]?.dataUrl;
-	const randomness = storedSettings.randomnessOneInX ?? 333;
+	const randomness = storedSettings.randomnessOneInX ?? 150;
 
 	if (autoUrl) {
 		persistentSharkURL = autoUrl;
