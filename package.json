@@ -1,6 +1,6 @@
 {
 	"name": "sharkify",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "A Firefox extension that randomly replaces images on web pages with your uploaded images",
 	"main": "manifest.json",
 	"repository": {
