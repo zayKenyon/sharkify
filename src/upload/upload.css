@@ -210,7 +210,11 @@ body {
 	height: 140px;
 	object-fit: cover;
 	display: block;
-	cursor: pointer;
+	cursor: grab;
+}
+
+.tile img:active {
+	cursor: grabbing;
 }
 
 .tile__meta {

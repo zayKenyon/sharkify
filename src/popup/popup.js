@@ -1,5 +1,3 @@
-/** Popup entry. */
-
 let randomnessOneInX = 333; // default 1 in 333 images
 
 function showError() {
@@ -28,8 +26,9 @@ async function isOnOptionsPage() {
 		if (!activeTab?.url) return false;
 
 		const optionsUrl = browser.runtime.getURL("src/upload/upload.html");
-		return activeTab.url.startsWith(optionsUrl);
-	} catch {
+		return activeTab.url === optionsUrl || activeTab.url.startsWith(optionsUrl);
+	} catch (error) {
+		console.error("[Sharkify] isOnOptionsPage error:", error);
 		return false;
 	}
 }
@@ -42,8 +41,12 @@ async function checkImagesAndUpdateButton() {
 
 	const onOptionsPage = await isOnOptionsPage();
 
-	if (sharkifyBtn) sharkifyBtn.disabled = images.length === 0 || onOptionsPage;
-	if (resetBtn) resetBtn.disabled = onOptionsPage;
+	if (sharkifyBtn) {
+		sharkifyBtn.disabled = images.length === 0 || onOptionsPage;
+	}
+	if (resetBtn) {
+		resetBtn.disabled = onOptionsPage;
+	}
 
 	return images;
 }
@@ -60,7 +63,6 @@ async function loadRandomness() {
 }
 
 async function saveRandomness(value) {
-	randomnessOneInX = value;
 	await browser.storage.local.set({ randomnessOneInX: value });
 }
 
@@ -73,6 +75,7 @@ function setupRandomnessSlider() {
 	slider.addEventListener("input", (e) => {
 		const value = parseInt(e.target.value, 10);
 		valueDisplay.textContent = value;
+		randomnessOneInX = value;
 	});
 
 	slider.addEventListener("change", async (e) => {
@@ -85,12 +88,6 @@ function wireUI() {
 	document
 		.getElementById("open-upload-tab-btn")
 		?.addEventListener("click", () => {
-			// Disable sharkify and reset buttons when opening the options page
-			const sharkifyBtn = document.getElementById("sharkify-btn");
-			const resetBtn = document.getElementById("reset-btn");
-			if (sharkifyBtn) sharkifyBtn.disabled = true;
-			if (resetBtn) resetBtn.disabled = true;
-
 			openUploadPage();
 		});
 
@@ -98,9 +95,8 @@ function wireUI() {
 		.getElementById("sharkify-btn")
 		?.addEventListener("click", async () => {
 			const images = await checkImagesAndUpdateButton();
-			if (images.length === 0) {
-				return;
-			}
+			if (images.length === 0) return;
+
 			const url = images[Math.floor(Math.random() * images.length)]?.dataUrl;
 			if (!url) return;
 
@@ -126,12 +122,7 @@ function wireUI() {
 	});
 }
 
-try {
-	wireUI();
-	setupRandomnessSlider();
-	loadRandomness();
-	checkImagesAndUpdateButton();
-} catch (e) {
-	console.error(e);
-	showError();
-}
+wireUI();
+setupRandomnessSlider();
+loadRandomness();
+checkImagesAndUpdateButton();
