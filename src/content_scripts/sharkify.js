@@ -53,14 +53,14 @@
 	let persistentSharkURL = null;
 	let autoModeConfig = null;
 
-	function calcProbability(randomnessOneInX) {
-		return 1 / (randomnessOneInX ?? 333);
+	let sharkPreloadPromise = null;
+	function ensurePreloaded(url) {
+		if (!url) return Promise.resolve(false);
+		return (sharkPreloadPromise ??= preload(url));
 	}
 
-	function restoreSharkifiedImage(img) {
-		img.setAttribute("src", persistentSharkURL);
-		img.removeAttribute("srcset");
-		img.removeAttribute("sizes");
+	function calcProbability(randomnessOneInX) {
+		return 1 / (randomnessOneInX ?? 333);
 	}
 
 	function getApplyParams() {
@@ -68,6 +68,13 @@
 			randomizePerImage: autoModeConfig?.mode === "auto",
 			probability: autoModeConfig?.probability ?? 1,
 		};
+	}
+
+	function restoreSharkifiedImage(img) {
+		// Avoid redundant DOM writes
+		if (img.getAttribute("src") !== persistentSharkURL) img.setAttribute("src", persistentSharkURL);
+		if (img.hasAttribute("srcset")) img.removeAttribute("srcset");
+		if (img.hasAttribute("sizes")) img.removeAttribute("sizes");
 	}
 
 	function applyToImage(img, finalUrl, { randomizePerImage, probability }) {
@@ -82,19 +89,18 @@
 
 		storeOriginal(img);
 		img.setAttribute("src", finalUrl);
-		img.removeAttribute("srcset");
-		img.removeAttribute("sizes");
+		if (img.hasAttribute("srcset")) img.removeAttribute("srcset");
+		if (img.hasAttribute("sizes")) img.removeAttribute("sizes");
 		img.classList.add("sharkify-image");
 	}
 
 	async function sharkify({ url, randomizePerImage, randomnessOneInX }) {
-		if (!persistentSharkURL) persistentSharkURL = url;
+		persistentSharkURL ??= url;
 		if (!persistentSharkURL) return;
 
-		await preload(persistentSharkURL);
+		await ensurePreloaded(persistentSharkURL);
 
 		const probability = calcProbability(randomnessOneInX);
-
 		for (const img of document.querySelectorAll("img")) {
 			applyToImage(img, persistentSharkURL, { randomizePerImage, probability });
 		}
@@ -102,67 +108,61 @@
 
 	function updateAutoModeConfig(randomizePerImage, randomnessOneInX) {
 		autoModeConfig = randomizePerImage
-			? {
-				enabled: true,
-				probability: calcProbability(randomnessOneInX),
-				mode: "auto",
-			}
+			? { enabled: true, probability: calcProbability(randomnessOneInX), mode: "auto" }
 			: persistentSharkURL
 				? { enabled: true, probability: 1, mode: "manual" }
 				: null;
 	}
 
-	function handleNewOrChangedImages(root) {
-		if (!persistentSharkURL || !autoModeConfig?.enabled) return;
+	let mutationPending = false;
+	const mutationCandidates = new Set();
 
-		const applyParams = getApplyParams();
+	function addCandidate(node) {
+		if (node instanceof HTMLImageElement) {
+			mutationCandidates.add(node);
+			return;
+		}
+		if (!node?.querySelectorAll) return;
+		for (const img of node.querySelectorAll("img")) mutationCandidates.add(img);
+	}
 
-		if (root instanceof HTMLImageElement) {
-			if (root.classList.contains("sharkify-image")) {
-				restoreSharkifiedImage(root);
-			} else {
-				applyToImage(root, persistentSharkURL, applyParams);
-			}
+	function flushMutationCandidates() {
+		if (!persistentSharkURL || !autoModeConfig?.enabled) {
+			mutationCandidates.clear();
 			return;
 		}
 
-		if (!root?.querySelectorAll) return;
-
-		for (const img of root.querySelectorAll("img:not(.sharkify-image)")) {
-			applyToImage(img, persistentSharkURL, applyParams);
+		const applyParams = getApplyParams();
+		for (const img of mutationCandidates) {
+			if (!(img instanceof HTMLImageElement) || !img.isConnected) continue;
+			if (img.classList.contains("sharkify-image")) restoreSharkifiedImage(img);
+			else applyToImage(img, persistentSharkURL, applyParams);
 		}
+		mutationCandidates.clear();
 	}
 
-	let mutationPending = false;
 	const observer = new MutationObserver((mutations) => {
 		if (!persistentSharkURL || !autoModeConfig?.enabled) return;
-		if (mutationPending) return;
 
+		for (const m of mutations) {
+			if (m.type === "childList") {
+				for (const n of m.addedNodes) {
+					if (n.nodeType !== Node.ELEMENT_NODE) continue;
+					addCandidate(n);
+				}
+				continue;
+			}
+
+			if (m.type === "attributes" && m.target instanceof HTMLImageElement) {
+				mutationCandidates.add(m.target);
+			}
+		}
+
+		if (mutationPending) return;
 		mutationPending = true;
 		requestAnimationFrame(() => {
 			mutationPending = false;
-
-			for (const m of mutations) {
-				if (m.type === "childList") {
-					for (const n of m.addedNodes) {
-						if (n.nodeType !== Node.ELEMENT_NODE) continue;
-						handleNewOrChangedImages(n);
-					}
-				}
-
-				if (m.type === "attributes" && m.target instanceof HTMLImageElement) {
-					handleNewOrChangedImages(m.target);
-				}
-			}
-
-			setTimeout(() => {
-				if (!persistentSharkURL || !autoModeConfig?.enabled) return;
-
-				const applyParams = getApplyParams();
-				for (const img of document.querySelectorAll("img:not(.sharkify-image)")) {
-					applyToImage(img, persistentSharkURL, applyParams);
-				}
-			}, 100);
+			flushMutationCandidates();
 		});
 	});
 
@@ -177,6 +177,8 @@
 		if (message.command === "reset") {
 			resetPage();
 			autoModeConfig = null;
+			mutationCandidates.clear();
+			mutationPending = false;
 			return;
 		}
 		if (message.command === "sharkify") {
