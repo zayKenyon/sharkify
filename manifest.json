@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "Sharkify",
 	"version": "1.0.1",
-	"description": "Randomly replaces images on webpages with shark images.",
+	"description": "A Firefox extension that randomly replaces images on webpages with your custom uploaded images.",
 	"permissions": [
 		"storage",
 		"activeTab",
