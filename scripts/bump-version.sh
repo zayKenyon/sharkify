@@ -26,12 +26,12 @@ import json, sys
 
 version = sys.argv[1]
 
-with open("manifest.json", "r", encoding="utf-8") as f:
+with open("../manifest.json", "r", encoding="utf-8") as f:
 	data = json.load(f)
 
 data["version"] = version
 
-with open("manifest.json", "w", encoding="utf-8") as f:
+with open("../manifest.json", "w", encoding="utf-8") as f:
 	json.dump(data, f, indent="\t")
 	f.write("\n")
 
